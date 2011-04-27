@@ -14,7 +14,7 @@ Built for you is a Python lib to make it super easy for you to use this within y
 >>> m.movies
 >>> #... etc
 
-One result 
+One result <ResultNode>
  
 >>> m = r.movies[0] #could be "Minority Report"
 >>> m.name #Minority Support
