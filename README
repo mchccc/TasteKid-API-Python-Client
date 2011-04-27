@@ -4,7 +4,7 @@ Built for you is a Python lib to make it super easy for you to use this within y
 
 >>> from tastekid.api import Similar
 >>> s = Similar()
->>> r = s.query('yesman')
+>>> r = s.query('The Matrix')
 >>> r.movies
 >>> r.music
 >>> r.authors
@@ -13,4 +13,16 @@ Built for you is a Python lib to make it super easy for you to use this within y
 >>> m = r.movies[0].similar()
 >>> m.movies
 >>> #... etc
+
+One result 
+ 
+>>> m = r.movies[0] #could be "Minority Report"
+>>> m.name #Minority Support
+>>> m.type #movie
+>>> m.teaser #...some description
+>>> m.wikipedia #wikipedia url
+>>> m.youtube.id #youtube video id
+>>> m.youtube.title #youtube video title
+>>> m.youtube.url #url to youtube page
+
 
