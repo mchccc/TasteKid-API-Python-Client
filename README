@@ -1,0 +1,16 @@
+TasteKid.com is a cool idea where people add their likes and dislikes and the system applies this to a suggestion system.
+
+Built for you is a Python lib to make it super easy for you to use this within your project. With 3 lines of code - you have enough to work with.
+
+>>> from tastekid.api import Similar
+>>> s = Similar()
+>>> r = s.query('yesman')
+>>> r.movies
+>>> r.music
+>>> r.authors
+>>> r.shows
+>>> r.books
+>>> m = r.movies[0].similar()
+>>> m.movies
+>>> #... etc
+
