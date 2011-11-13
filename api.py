@@ -36,19 +36,25 @@ class Similar(object):
     '''
     _query = None
     _search = None
-    type= 'all'
+    _f = None
+    _k = None
+    type= None
     
     def __init__(self, search_value=None):
         if search_value:
             self.search = search_value
     
-    def query(self, search_value=None, raw=False):
+    def query(self, search_value=None, type='all', raw=False, f=None, k=None):
         '''
         Perform a query to tastekid. Passing a raw=True will return
         pure JSON code rather than the internal API class object
         '''
         if search_value == None and self.search == None:
             return AttributeError
+        
+        self._f = f
+        self._k = k
+        self.type = type
         
         if search_value:
             self.search = search_value
@@ -61,7 +67,7 @@ class Similar(object):
         data = self._query.get_data()
         
         if raw:
-            return data
+            return json.loads(data)
         else:
             return self._query.get_results(data)
     
@@ -117,9 +123,11 @@ class Similar(object):
             '''
             Build the tastekid request URL
             '''
-            q_plus = urllib.quote_plus(self._parent._search)
+            q_plus = urllib.quote_plus(unicode(self._parent._search).encode('utf-8'))
             s = self._api_url + "?q=" + q_plus + self.type + \
-            '&verbose=1&format=' + self._format
+            '&verbose=' + ('1' if self._verbose else '0') + '&format=' + self._format
+            if self._parent._f:
+                s = s + '&f=' + self._parent._f + '&k=' + self._parent._k
             return s
         
         def make_request(self):
@@ -146,16 +154,19 @@ class Similar(object):
             d = unicode(data, 'utf-8')
             if d:
                 j = json.loads(d)
+                s = j['Similar']['Info']
                 r = j['Similar']['Results']
+                source = ResultNode(self._(s[0]['Type']), self._(s[0]['Name']))
                 for el in r:
                     node = ResultNode(self._(el['Type']), self._(el['Name']))
-                    node.teaser = self._(el['wTeaser'])
-                    node.wikipedia = self._(el['wUrl'])
-                    node.youtube.id = self._(el['yID'])
-                    node.youtube.title = self._(el['yTitle'])
-                    node.youtube.url = self._(el['yUrl'])
+                    if self._verbose:
+                        node.teaser = self._(el['wTeaser'])
+                        node.wikipedia = self._(el['wUrl'])
+                        node.youtube.id = self._(el['yID'])
+                        node.youtube.title = self._(el['yTitle'])
+                        node.youtube.url = self._(el['yUrl'])
                     l.append(node)
-            return ResultSet(l)
+            return (source,ResultSet(l))
 
 class ResultSet(object):
     '''
